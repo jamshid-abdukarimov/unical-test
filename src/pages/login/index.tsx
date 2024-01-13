@@ -1,5 +1,34 @@
 import ButtonLoader from "../../components/BtnLoader";
+import Button from "../../components/Button";
 import useLogin from "./useLogin.hooks";
+
+interface InputProps {
+  type?: "text" | "password";
+  name: string;
+  inputId: string;
+  label: string;
+}
+
+const Input = ({ name, inputId, type = "text", label }: InputProps) => {
+  return (
+    <div>
+      <label
+        htmlFor={inputId}
+        className="block mb-2 text-lg font-medium text-white"
+      >
+        {label}
+      </label>
+      <input
+        type={type}
+        name={name}
+        id={inputId}
+        className=" border outline-none  sm:text-lg rounded-lg block w-full p-2.5 bg-slate-600 border-slate-400 placeholder-slate-400 text-white"
+        placeholder="**********"
+        required
+      />
+    </div>
+  );
+};
 
 const Login = () => {
   const { handleSubmit, loading } = useLogin();
@@ -12,50 +41,21 @@ const Login = () => {
             Profilga kirish
           </h1>
           <form className="space-y-4 md:space-y-6" onSubmit={handleSubmit}>
-            <div>
-              <label
-                htmlFor="username"
-                className="block mb-2 text-lg font-medium text-white"
-              >
-                Username
-              </label>
-              <input
-                type="text"
-                name="username"
-                id="username"
-                className=" border outline-none  sm:text-lg rounded-lg block w-full p-2.5 bg-slate-600 border-slate-400 placeholder-slate-400 text-white"
-                placeholder="**********"
-                required
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="password"
-                className="block mb-2 text-lg font-medium text-white"
-              >
-                Password
-              </label>
-              <input
-                type="password"
-                name="password"
-                id="password"
-                placeholder="•••••••••••••••"
-                className="border outline-none sm:text-lg rounded-lg  block w-full p-2.5 bg-slate-600 border-slate-400 placeholder-slate-400 text-white"
-                required
-              />
-            </div>
+            <Input label="Username" name="username" inputId="username" />
+            <Input
+              label="Password"
+              name="password"
+              inputId="password"
+              type="password"
+            />
             {loading ? (
               <ButtonLoader
+                text="LOADING..."
                 style={{ width: "100%" }}
-                className="w-full justify-center"
+                className="w-full justify-center py-2.5"
               />
             ) : (
-              <button
-                type="submit"
-                className="w-full text-white bg-blue-600 hover:bg-blue-700 font-medium rounded-lg px-5 py-2.5 text-center uppercase tracking-wider"
-              >
-                Kirish
-              </button>
+              <Button type="submit">Login</Button>
             )}
           </form>
         </div>
