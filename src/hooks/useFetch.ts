@@ -1,4 +1,4 @@
-import { useLayoutEffect } from "react";
+import React, { useLayoutEffect } from "react";
 import useStore from "../store";
 import filterKeys from "../utils/filterKeys";
 import { Keys } from "../utils/StoreKeys";
@@ -7,7 +7,7 @@ const useFetch = <T>(
   fetches: {
     [key in Keys<T>]: () => void;
   },
-  deps?: (string | number)[]
+  deps?: React.DependencyList
 ) => {
   const store = useStore();
   const { setLoading, setData, setError } = store;

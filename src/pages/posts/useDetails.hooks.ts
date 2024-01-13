@@ -5,9 +5,14 @@ import toast from "react-hot-toast";
 
 const usePostsDetails = () => {
   const { id } = useParams();
-  const [post, setPost] = React.useState<Post>({} as Post);
+  const [data, setData] = React.useState<{
+    post: Post;
+    comments: Comment[];
+  }>({
+    post: {} as Post,
+    comments: [],
+  });
   const [updated, setUpdated] = React.useState(false);
-  const [comments, setComments] = React.useState<Comment[]>([]);
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState(null);
   React.useLayoutEffect(() => {
@@ -23,8 +28,10 @@ const usePostsDetails = () => {
           GetOneRequest<Post>("/posts", id!),
           GetRequest<{ comments: Comment[] }>(`/posts/${id}/comments`),
         ]);
-        setPost(data);
-        setComments(comments);
+        setData({
+          post: data,
+          comments,
+        });
       } catch (error: any) {
         console.log(error);
         setError(error.response.data.message || "Something went wrong");
@@ -37,7 +44,7 @@ const usePostsDetails = () => {
   const handleUpdate = async () => {
     try {
       await UpdateRequest("/posts", `${id}`, {
-        reactions: post.reactions ? post.reactions + 1 : 1,
+        reactions: data.post.reactions ? data.post.reactions + 1 : 1,
       });
       setUpdated((prev) => !prev);
     } catch (error) {
@@ -47,9 +54,9 @@ const usePostsDetails = () => {
   };
 
   return {
-    post,
+    post: data.post,
     updated,
-    comments,
+    comments: data.comments,
     loading,
     error,
     handleUpdate,

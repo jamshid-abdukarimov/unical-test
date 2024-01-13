@@ -7,6 +7,10 @@ import useDebounce from "../../hooks/useDebounce";
 
 const usePosts = (LIMIT: number) => {
   const [page, setPage] = React.useState(1);
+  const [params, setParams] = React.useState({
+    skip: 0,
+    q: "",
+  });
   const [searchValue, setSearchValue] = React.useState("");
   const debouncedValue = useDebounce(searchValue, 500);
 
@@ -18,30 +22,31 @@ const usePosts = (LIMIT: number) => {
     },
   } = useStore();
 
-  const skip = LIMIT * (page - 1);
-
-  const params: {
-    skip: number;
-    q: string;
-    limit: number;
-  } = {
-    skip,
-    limit: LIMIT,
-    q: debouncedValue,
-  };
-
   React.useEffect(() => {
     setPage(1);
-    params.skip = 0;
-    params.q = debouncedValue;
+    setParams({
+      skip: 0,
+      q: debouncedValue,
+    });
   }, [debouncedValue]);
 
-  let fetches = {
-    posts: () =>
-      GetRequest(debouncedValue ? "/posts/search" : "/posts", params),
-  };
+  React.useEffect(() => {
+    setParams((prev) => ({
+      ...prev,
+      skip: LIMIT * (page - 1),
+    }));
+  }, [page]);
 
-  useFetch(fetches, [page, debouncedValue]);
+  useFetch(
+    {
+      posts: () =>
+        GetRequest(debouncedValue ? "/posts/search" : "/posts", {
+          ...params,
+          limit: LIMIT,
+        }),
+    },
+    [params]
+  );
 
   return {
     posts,
@@ -52,7 +57,7 @@ const usePosts = (LIMIT: number) => {
     searchValue,
     setSearchValue,
     total,
-    skip,
+    skip: params.skip,
   };
 };
 
