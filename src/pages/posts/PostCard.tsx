@@ -3,14 +3,7 @@ import { Link } from "react-router-dom";
 
 import Icon from "../../components/Icon";
 
-const PostCard = ({
-  body,
-  reactions,
-  tags,
-  title,
-  userId,
-  id,
-}: Partial<Post>) => {
+const PostCard = ({ body, reactions, tags, title, id }: Partial<Post>) => {
   return (
     <div className="h-full block rounded-lg bg-white p-6 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] dark:bg-neutral-700 relative">
       <Link
@@ -33,9 +26,9 @@ const PostCard = ({
       </div>
       <Link
         className="block py-1 px-3 bg-violet-500 text-white max-w-max rounded-md mt-3"
-        to={`/users/${userId}/posts`}
+        to={`/posts/${id}`}
       >
-        User's posts
+        View post
       </Link>
     </div>
   );

@@ -3,6 +3,7 @@ import { mdiHeart, mdiHeartOutline } from "@mdi/js";
 import Icon from "../../components/Icon";
 import Title from "../../components/Title";
 import usePostsDetails from "./useDetails.hooks";
+import { Link } from "react-router-dom";
 
 const PostDetails = () => {
   const { post, updated, comments, loading, error, handleUpdate } =
@@ -40,6 +41,12 @@ const PostDetails = () => {
           />
           <span>{updated ? post!.reactions + 1 : post!.reactions}</span>
         </div>
+        <Link
+          className="block py-1 px-3 bg-violet-500 text-white max-w-max rounded-md mt-3"
+          to={`/users/${post.userId}/posts`}
+        >
+          View other posts by this user
+        </Link>
       </div>
       <div className="mt-10">
         <Title className="mb-3">Comments</Title>
