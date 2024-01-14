@@ -6,13 +6,17 @@ import useStore from "../../store";
 import useDebounce from "../../hooks/useDebounce";
 
 const usePosts = (LIMIT: number) => {
-  const [page, setPage] = React.useState(1);
+  const [state, setState] = React.useState({
+    page: 1,
+    searchValue: "",
+  });
+  // const [searchValue, setSearchValue] = React.useState("");
+  // const [page, setPage] = React.useState(1);
   const [params, setParams] = React.useState({
     skip: 0,
     q: "",
   });
-  const [searchValue, setSearchValue] = React.useState("");
-  const debouncedValue = useDebounce(searchValue, 500);
+  const debouncedValue = useDebounce(state.searchValue, 500);
 
   const {
     posts: {
@@ -23,7 +27,7 @@ const usePosts = (LIMIT: number) => {
   } = useStore();
 
   React.useEffect(() => {
-    setPage(1);
+    setState((prev) => ({ ...prev, page: 1 }));
     setParams({
       skip: 0,
       q: debouncedValue,
@@ -33,9 +37,9 @@ const usePosts = (LIMIT: number) => {
   React.useEffect(() => {
     setParams((prev) => ({
       ...prev,
-      skip: LIMIT * (page - 1),
+      skip: LIMIT * (state.page - 1),
     }));
-  }, [page]);
+  }, [state.page]);
 
   useFetch(
     {
@@ -52,10 +56,11 @@ const usePosts = (LIMIT: number) => {
     posts,
     postsLoading,
     postsError,
-    page,
-    setPage,
-    searchValue,
-    setSearchValue,
+    page: state.page,
+    setPage: (page: number) => setState((prev) => ({ ...prev, page })),
+    searchValue: state.searchValue,
+    setSearchValue: (searchValue: string) =>
+      setState((prev) => ({ ...prev, searchValue })),
     total,
     skip: params.skip,
   };
