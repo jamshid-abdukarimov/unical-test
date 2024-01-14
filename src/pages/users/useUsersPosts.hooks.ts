@@ -10,25 +10,15 @@ const useUsersPosts = (LIMIT: number) => {
   const [page, setPage] = React.useState(1);
 
   const {
-    posts: {
-      data: { total, items: posts },
-      loading: postsLoading,
-      error: postsError,
-    },
-  } = useStore();
+    data: { total, items: posts },
+    loading: postsLoading,
+    error: postsError,
+  } = useStore().posts;
 
   const skip = LIMIT * (page - 1);
 
-  const params: {
-    skip: number;
-    limit: number;
-  } = {
-    skip,
-    limit: LIMIT,
-  };
-
   let fetches = {
-    posts: () => GetOneRequest("/posts", `user/${id}`, params),
+    posts: () => GetOneRequest("/posts", `user/${id}`, { skip, limit: LIMIT }),
   };
 
   useFetch(fetches, [page]);

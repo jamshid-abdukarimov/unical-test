@@ -4,34 +4,42 @@ import { GetOneRequest } from "../../lib";
 
 const useProductsDetails = () => {
   const { id } = useParams();
-  const [product, setProduct] = React.useState<Product | null>(null);
-  const [imageIndex, setImageIndex] = React.useState(0);
-  const [orderCount, setOrderCount] = React.useState(1);
-  const [loading, setLoading] = React.useState(false);
-  const [error, setError] = React.useState(null);
+  const [state, setState] = React.useState({
+    product: null as Product | null,
+    imageIndex: 0,
+    orderCount: 1,
+    loading: false,
+    error: null,
+  });
+  // const [product, setProduct] = React.useState<Product | null>(null);
+  // const [imageIndex, setImageIndex] = React.useState(0);
+  // const [orderCount, setOrderCount] = React.useState(1);
+  // const [loading, setLoading] = React.useState(false);
+  // const [error, setError] = React.useState(null);
   React.useLayoutEffect(() => {
     (async () => {
       try {
-        setLoading(true);
+        setState((prev) => ({ ...prev, loading: true }));
         const { data } = await GetOneRequest<Product>("/products", id!);
-        setProduct(data);
+        setState((prev) => ({ ...prev, product: data }));
       } catch (error: any) {
         console.log(error);
-        setError(error.response.data.message || "Something went wrong");
+        setState((prev) => ({
+          ...prev,
+          error: error.response.data.message || "Something went wrong",
+        }));
       } finally {
-        setLoading(false);
+        setState((prev) => ({ ...prev, loading: false }));
       }
     })();
   }, []);
 
   return {
-    product,
-    imageIndex,
-    orderCount,
-    loading,
-    error,
-    setImageIndex,
-    setOrderCount,
+    ...state,
+    setImageIndex: (imageIndex: number) =>
+      setState((prev) => ({ ...prev, imageIndex })),
+    setOrderCount: (orderCount: number) =>
+      setState((prev) => ({ ...prev, orderCount })),
   };
 };
 

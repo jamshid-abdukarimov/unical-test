@@ -10,8 +10,6 @@ const usePosts = (LIMIT: number) => {
     page: 1,
     searchValue: "",
   });
-  // const [searchValue, setSearchValue] = React.useState("");
-  // const [page, setPage] = React.useState(1);
   const [params, setParams] = React.useState({
     skip: 0,
     q: "",
@@ -56,9 +54,8 @@ const usePosts = (LIMIT: number) => {
     posts,
     postsLoading,
     postsError,
-    page: state.page,
+    ...state,
     setPage: (page: number) => setState((prev) => ({ ...prev, page })),
-    searchValue: state.searchValue,
     setSearchValue: (searchValue: string) =>
       setState((prev) => ({ ...prev, searchValue })),
     total,

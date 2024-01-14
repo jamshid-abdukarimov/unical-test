@@ -6,9 +6,15 @@ import useStore from "../../store";
 import useDebounce from "../../hooks/useDebounce";
 
 const useProducts = (LIMIT: number) => {
-  const [page, setPage] = React.useState(1);
-  const [searchValue, setSearchValue] = React.useState("");
-  const debouncedValue = useDebounce(searchValue, 500);
+  const [state, setState] = React.useState({
+    page: 1,
+    searchValue: "",
+  });
+  const [params, setParams] = React.useState({
+    skip: 0,
+    q: "",
+  });
+  const debouncedValue = useDebounce(state.searchValue, 500);
 
   const {
     products: {
@@ -23,47 +29,46 @@ const useProducts = (LIMIT: number) => {
     },
   } = useStore();
 
-  const skip = LIMIT * (page - 1);
-
-  const params: {
-    limit: number;
-    skip: number;
-    q: string;
-    select: string;
-  } = {
-    limit: LIMIT,
-    skip,
-    q: debouncedValue,
-    select: "id,title,price,thumbnail,discountPercentage,rating",
-  };
+  React.useEffect(() => {
+    setState((prev) => ({ ...prev, page: 1 }));
+    setParams({
+      skip: 0,
+      q: debouncedValue,
+    });
+  }, [debouncedValue]);
 
   React.useEffect(() => {
-    setPage(1);
-    params.skip = 0;
-    params.q = debouncedValue;
-  }, [debouncedValue]);
+    setParams((prev) => ({
+      ...prev,
+      skip: LIMIT * (state.page - 1),
+    }));
+  }, [state.page]);
 
   let fetches = {
     products: () =>
-      GetRequest(debouncedValue ? "/products/search" : "/products", params),
+      GetRequest(debouncedValue ? "/products/search" : "/products", {
+        ...params,
+        limit: LIMIT,
+        select: "id,title,price,thumbnail,discountPercentage,rating",
+      }),
     categories: () => GetRequest("/products/categories"),
   };
 
-  useFetch(fetches, [page, debouncedValue]);
+  useFetch(fetches, [params]);
 
   return {
     products,
     productsLoading,
     productsError,
-    page,
-    setPage,
-    searchValue,
-    setSearchValue,
+    ...state,
+    setPage: (page: number) => setState((prev) => ({ ...prev, page })),
+    setSearchValue: (searchValue: string) =>
+      setState((prev) => ({ ...prev, searchValue })),
     total,
     categories,
     categoriesLoading,
     categoriesError,
-    skip,
+    skip: params.skip,
   };
 };
 

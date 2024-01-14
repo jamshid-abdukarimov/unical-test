@@ -1,6 +1,6 @@
 import Input from "../../components/Input";
-import { Link } from "react-router-dom";
 import Title from "../../components/Title";
+import Categories from "./Categories";
 
 interface Props {
   searchValue?: string;
@@ -29,13 +29,7 @@ const Sidebar = ({
         )}
         <div className="mt-5">
           <Title>Categories</Title>
-          <ul className="flex flex-col gap-2 capitalize">
-            {categories.map((category) => (
-              <li key={category}>
-                <Link to={`/products/${category}`}>{category}</Link>
-              </li>
-            ))}
-          </ul>
+          <Categories categories={categories} />
         </div>
       </div>
     </div>

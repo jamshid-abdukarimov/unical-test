@@ -1,6 +1,45 @@
 import Loader from "../../components/Loader";
 import Button from "../../components/Button";
 import useProductsDetails from "./useDetails.hooks";
+import React from "react";
+
+const StarIcon = () => (
+  <svg
+    data-v-40da8b10
+    width={20}
+    height={20}
+    viewBox="0 0 18 18"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    data-test-id="icon__rating-star"
+    className="ui-icon  rating-icon"
+  >
+    <path
+      d="M9 12.9525L13.635 15.75L12.405 10.4775L16.5 6.93L11.1075 6.4725L9 1.5L6.8925 6.4725L1.5 6.93L5.595 10.4775L4.365 15.75L9 12.9525Z"
+      fill="#F5A623"
+    />
+  </svg>
+);
+
+const CountButton = ({
+  children,
+  disabled,
+  onClick,
+}: {
+  children: React.ReactNode;
+  disabled: boolean;
+  onClick: React.MouseEventHandler<HTMLButtonElement>;
+}) => {
+  return (
+    <button
+      className={`w-10 h-10 text-xl ${disabled ? "opacity-50" : ""}`}
+      disabled={disabled}
+      onClick={onClick}
+    >
+      {children}
+    </button>
+  );
+};
 
 const Details = () => {
   const {
@@ -46,21 +85,7 @@ const Details = () => {
       </div>
       <div className="col-span-7">
         <div className="flex items-center gap-1">
-          <svg
-            data-v-40da8b10
-            width={20}
-            height={20}
-            viewBox="0 0 18 18"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            data-test-id="icon__rating-star"
-            className="ui-icon  rating-icon"
-          >
-            <path
-              d="M9 12.9525L13.635 15.75L12.405 10.4775L16.5 6.93L11.1075 6.4725L9 1.5L6.8925 6.4725L1.5 6.93L5.595 10.4775L4.365 15.75L9 12.9525Z"
-              fill="#F5A623"
-            />
-          </svg>
+          <StarIcon />
           <span className="text-sm">{product?.rating}</span>
         </div>
         <h2 className="text-2xl pt-2 capitalize">{product?.title}</h2>
@@ -78,27 +103,21 @@ const Details = () => {
         <p>Count:</p>
         <div className="flex items-center gap-10">
           <div className="flex border border-gray-300 rounded max-w-max mt-2 text-gray-800">
-            <button
-              className={`w-10 h-10 text-xl ${
-                orderCount === 1 ? "opacity-50" : ""
-              }`}
+            <CountButton
               disabled={orderCount === 1}
-              onClick={() => setOrderCount((prev) => prev - 1)}
+              onClick={() => setOrderCount(orderCount - 1)}
             >
               -
-            </button>
+            </CountButton>
             <span className="w-10 h-10 text-lg flex justify-center items-center">
               {orderCount}
             </span>
-            <button
-              className={`w-10 h-10 text-xl ${
-                orderCount === product?.stock ? "opacity-50" : ""
-              }`}
+            <CountButton
               disabled={orderCount === product?.stock}
-              onClick={() => setOrderCount((prev) => prev + 1)}
+              onClick={() => setOrderCount(orderCount + 1)}
             >
               +
-            </button>
+            </CountButton>
           </div>
           <p className="text-green-700 mt-3">Unit Count: {product?.stock}</p>
         </div>

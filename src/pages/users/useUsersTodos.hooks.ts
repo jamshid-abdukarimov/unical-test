@@ -8,8 +8,10 @@ const useUsersTodos = (limit: number) => {
   const { id } = useParams();
   const [page, setPage] = React.useState(1);
   const {
-    todos: { data: todos, loading: todosLoading, error: todosError },
-  } = useStore();
+    data: todos,
+    loading: todosLoading,
+    error: todosError,
+  } = useStore().todos;
   const fetches = {
     todos: () =>
       GetOneRequest("/todos", `user/${id}`, {

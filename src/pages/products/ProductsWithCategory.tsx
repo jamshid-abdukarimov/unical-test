@@ -1,4 +1,3 @@
-import { useParams } from "react-router-dom";
 import useProductsCategory from "./useProductsCategory.hooks";
 import ProductsList from "./ProductsList";
 import Loader from "../../components/Loader";
@@ -6,7 +5,6 @@ import Sidebar from "./Sidebar";
 
 const LIMIT = 24;
 const ProductsWithCategory = () => {
-  const { category } = useParams();
   const {
     page,
     products,
@@ -18,7 +16,8 @@ const ProductsWithCategory = () => {
     categories,
     categoriesError,
     categoriesLoading,
-  } = useProductsCategory(LIMIT, category!);
+    category,
+  } = useProductsCategory(LIMIT);
 
   if (productsLoading || categoriesLoading) {
     return <Loader main />;

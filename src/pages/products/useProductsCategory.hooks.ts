@@ -3,8 +3,10 @@ import React from "react";
 import useFetch from "../../hooks/useFetch";
 import { GetOneRequest, GetRequest } from "../../lib";
 import useStore from "../../store";
+import { useParams } from "react-router-dom";
 
-const useProductsCategory = (LIMIT: number, category: string) => {
+const useProductsCategory = (LIMIT: number) => {
+  const { category } = useParams();
   const [page, setPage] = React.useState(1);
 
   const {
@@ -22,15 +24,14 @@ const useProductsCategory = (LIMIT: number, category: string) => {
 
   const skip = LIMIT * (page - 1);
 
-  const params: {
-    limit: number;
-    skip: number;
-    select: string;
-  } = {
-    limit: LIMIT,
-    skip,
-    select: "id,title,price,thumbnail,discountPercentage,rating",
-  };
+  const params = React.useMemo(
+    () => ({
+      limit: LIMIT,
+      skip,
+      select: "id,title,price,thumbnail,discountPercentage,rating",
+    }),
+    [LIMIT, skip]
+  );
 
   let fetches = {
     products: () => GetOneRequest("/products", `category/${category}`, params),
@@ -43,7 +44,7 @@ const useProductsCategory = (LIMIT: number, category: string) => {
     products,
     productsLoading,
     productsError,
-
+    category,
     page,
     setPage,
     total,

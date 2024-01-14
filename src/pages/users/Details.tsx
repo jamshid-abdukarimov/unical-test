@@ -1,33 +1,9 @@
-import React from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { GetOneRequest } from "../../lib";
 import Loader from "../../components/Loader";
 import Button from "../../components/Button";
+import useDetails from "./useDetails.hooks";
 
 const UsersDetails = () => {
-  const { id } = useParams();
-  const navigate = useNavigate();
-  const [user, setUser] = React.useState<(User & UserDetails) | null>(null);
-  const [loading, setLoading] = React.useState(false);
-  const [error, setError] = React.useState(null);
-  React.useEffect(() => {
-    (async () => {
-      try {
-        setLoading(true);
-        const { data } = await GetOneRequest<User & UserDetails>("/users", id!);
-        setUser(data);
-      } catch (error: any) {
-        console.log(error);
-        setError(error.response.data.message || "Something went wrong");
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, []);
-
-  const navigation = (n: "todos" | "posts") => {
-    return navigate(`/users/${id}/${n}`);
-  };
+  const { user, loading, error, navigation } = useDetails();
 
   if (loading) {
     return <Loader main />;
